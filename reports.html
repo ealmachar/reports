@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en" ng-app="myApp">
+	<head>
+		<meta charset="utf-8">
+		<title>NCR Reports testing</title>
+
+		<script src="js/jquery.js"></script>
+		<script src="js/jqueryui.js"></script>
+
+		<script src="js/angular.js"></script>
+		
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-colorpicker-module.js"></script>
+		
+		<script src="js/d3.min.js"></script>
+		
+		<!-- needed for Graph Capture -->
+			<!-- used for Canvas to Gif -->
+			<script src="js/LZWEncoder.js"></script>
+			<script src="js/NeuQuant.js"></script>
+			<script src="js/GIFEncoder.js"></script>
+			<script src="js/b64.js"></script>
+			
+			<!-- used for  SVG to Canvas -->
+			<script src="js/canvg.js"></script> 
+		
+		<!-- personal includes -->
+		<script src="graphManager.js"></script> 
+		<script src="lineLib.js"></script> 
+		<script src="graphLib.js"></script> 
+		
+		<script src="sample_data.js"></script>
+
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/colorpicker.css">
+		<link rel="stylesheet" href="css/jquery-ui.min.css">
+
+	</head>
+	
+	<style>
+	.portlet-placeholder {
+		border: 1px dotted black;
+		margin: 0 1em 1em 0;
+		height: 50px;
+	  }
+ 
+
+	</style>
+
+	<body ng-controller="colorController">
+
+		<canvas id="canvasExample"></canvas>
+
+
+		
+		<!-- control panel-->
+		 <div class="control_panel-container">
+			<div class="control_panel-main">
+				<div class="control_panel-left">
+					<h3>Control Panel</h3>
+					
+					<div class="btn-toolbar">
+						<div class="btn-group control_panel-button_list">
+							<button class="btn btn-default" data-toggle="modal" data-target="#modal-addLineGraph">Add Line Graph</button>
+							<button id="createPlotButton" class="btn btn-default">Add Raster Plot</button>
+						</div>
+						<div class="btn-group control_panel-button_list"">
+							<span class="btn btn-default">On column</span>					
+							<div id="graph-column_selection-button_list" class="btn-group" data-toggle="buttons">
+							<!--
+								<button id="graph-column_selection-1" class="btn btn-default graph_column_selector active">
+									<input type="radio">1
+								</button>
+								<button id="graph-column_selection-2" class="btn btn-default graph_column_selector">
+									<input type="radio">2
+								</button>
+								-->
+							</div>
+						</div>
+					</div>
+					<div class="btn-toolbar">
+						<div class="btn-group control_panel-button_list">
+							<button class="btn btn-default" data-toggle="modal" data-target="#modal-settings">Settings</button>
+							<button class="btn btn-default" data-toggle="modal" data-target="#modal-about">About</button>
+
+						</div>
+						<div class="btn-group control_panel-button_playlist">
+							<button id="control_panel-playback_button-play" class="btn btn-default" type="button">
+								<span class="glyphicon glyphicon-pause"></span>
+							</button>
+							<button id="control_panel-playback_button-gotoend" class="btn btn-default" type="button">
+								<span class="glyphicon glyphicon-fast-forward"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="control_panel-right">
+					<p style="font-size:20px;">
+					Reporting Status: <span id="simulationStatusLabel" class="label label-success">Live</span>
+					</p>
+					<p id="control_panel-report-time_of_last"></p>
+					<p>
+					Currently reporting cells in range: <span>0 to 50</span>
+					</p>
+				</div>
+			</div>
+		</div>
+		
+		<!-- html for hidden settings modal -->
+		<div id="modal-settings" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Settings</h4>
+					</div>
+					<div class="modal-body">
+						<div id="settings-mega_container">
+							<h4>do something</h4>
+							<p>
+								Reporting Columns
+								<span class="btn-group settings-button_list">
+									<button id="graph-settings-removeColumnButton" class="btn btn-default">-</button>
+									<button id="graph-settings-addColumnButton" class="btn btn-default">+</button>
+								</span>
+							</p>
+						</div>
+						<hr>
+							Add graphs on:
+							<div class="btn-group" data-toggle="buttons">
+							<button id="graph-settings-addGraphOnTop" class="btn btn-default active">
+								<input type="radio">Top
+							</button>
+							<button id="graph-settings-addGraphOnBottom" class="btn btn-default">
+								<input type="radio">Bottom
+							</button>
+							</div>
+						<hr>
+							Picture format:
+							<div class="btn-group" data-toggle="buttons">
+							<button id="graph-settings-useGifFormat" class="btn btn-default active">
+								<input type="radio">.GIF
+							</button>
+							<button id="graph-settings-useSvgFormat" class="btn btn-default">
+								<input type="radio">.SVG
+							</button>
+							</div>
+						<hr>
+						<div id="settings-individual_graphs">
+
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<!-- html for hidden settings modal -->
+		<div id="modal-about" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Neo-Cortical Reports</h4>
+					</div>
+					<div class="modal-body">
+						<div id="about-mega_container">
+							<h4>About</h4>
+							<p>
+								NCS stuff
+							</p>
+							<p>
+								Descriptions and stuff
+							</p>
+						</div>
+						<hr>
+						<div id="about-individual_graphs">
+							<h4>Concerns and other stuff</h4>
+							<p>
+								Stuff
+							</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- html for hidden add line graph modal -->
+		<div id="modal-addLineGraph" class="modal fade inputModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Add Linegraph</h4>
+					</div>
+					<div class="modal-body">
+						<p>
+							Enter up to 4 neuron id's separated by space (eg: "1 2 3 4")
+						</p>
+
+						<div class="input-group">
+							<input id="createGraphInput" type="text" class="form-control" onkeydown="enableEnterKey('createGraphButton');">
+							<span class="input-group-btn">
+							<button id="createGraphButton" class="btn btn-default" type="button">
+							Add
+							</button>
+							</span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- html for hidden add line modal -->
+		<div id="modal-addLine" class="modal fade inputModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Add Line</h4>
+					</div>
+					<div class="modal-body">
+						<p>
+							Enter up to 4 neuron id's separated by space (eg: "1 2 3 4")
+						</p>
+
+						<div class="input-group">
+							<input id="addLineInput" type="text" class="form-control" onkeydown="enableEnterKey('addLineButton');">
+							<span class="input-group-btn">
+							<button id="addLineButton" class="btn btn-default" type="button">
+							Add
+							</button>
+							</span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="graph-mega_container" style="position:relative;display:flex;width:100%;">
+		<!--
+			<div class="mega_container-div" style="flex:1;">
+				<ul id="sortable-column1" class="sortable">
+				</ul>
+			</div>
+			<div class="mega_container-div" style="flex:1;">
+				<ul id="sortable-column2" class="sortable">
+				</ul>
+			</div>-->
+		</div>
+	</body>
+
+
+	<script>
+
+
+
+
+
+	
+	var activeGraph, activeCell;
+	var global_flag = false, allPaused = false;
+	var scope, activeReportingColumn, reportingColumns, putGraphsOnTop, pictureFormat;
+	
+
+	
+	var addColumn = function(){
+
+		reportingColumns++;
+		var newColumn = reportingColumns;
+		var pointer;
+		
+		$("#graph-mega_container").append(
+			pointer = $('<div class="mega_container-div" style="flex:1;"></div>')
+		)
+		
+		pointer.append(
+			pointer = $('<ul id="sortable-column'+newColumn+'" class="sortable"></ul>')
+			);
+		
+		pointer.sortable({
+			connectWith: ".sortable",
+			handle: ".graph-unit",
+			placeholder: "portlet-placeholder"
+		});
+
+		$("#graph-column_selection-button_list").append(
+			pointer = $('<button id="graph-column_selection-'+newColumn+'" class="btn btn-default">'+
+				'<input type="radio">'+newColumn+'</button>')
+		);
+		
+		pointer.click(function(){
+			activeReportingColumn = newColumn;
+			console.log(activeReportingColumn);
+		});
+	}
+	
+	var removeColumn = function(){
+	/*
+		$("#graph-column_selection-"+1)
+	*/
+		var deletedColumn = reportingColumns;
+		$("#graph-column_selection-"+deletedColumn).remove();
+		reportingColumns--;
+	}
+	
+	var reportsInit = function(){
+	
+		putGraphsOnTop = true;
+		reportingColumns = 0;
+		
+	
+
+		
+		$("canvas").hide();
+		
+		for(var k=0; k<2; k++){
+			addColumn();
+		}
+		/*
+		$(".graph_column_selector").click(function(){
+			activeReportingColumn = $(this).attr("id").split("column_selection-")[1];
+		});
+		*/
+		
+		
+		$("#graph-settings-removeColumnButton").click(function(){
+			if(reportingColumns>1)
+				removeColumn();
+		})
+		.next()
+		.click(function(){
+			addColumn();
+		});
+		
+		$("#graph-settings-addGraphOnTop").click(function(){
+			putGraphsOnTop=true;
+		})
+		.next()
+		.click(function(){
+			putGraphsOnTop=false;
+		});
+		
+		$("#graph-settings-useGifFormat").click(function(){
+			pictureFormat = "GIF";
+		})
+		.next()
+		.click(function(){
+			pictureFormat = "SVG";
+		});
+		
+		$( ".sortable" ).sortable({
+			connectWith: ".sortable",
+			handle: ".graph-unit",
+			placeholder: "portlet-placeholder"
+		});
+		
+		$("#graph-column_selection-1").addClass("active");
+		activeReportingColumn = 1;
+
+		
+
+	}
+	
+
+	
+	
+	var myApp = angular.module("myApp",['colorpicker.module']);
+
+	myApp.controller("colorController", ['$scope', '$compile', '$window', function($scope,$compile,$window){
+		$scope.color = '';
+
+		$scope.$watch('color', function(){
+			var lineId = "#line-"+$window.activeGraph + "-" + $window.activeCell;
+			var buttonId = "#GRAPH"+$window.activeGraph + "-cell_button" + $window.activeCell + "-cell-button";
+
+			$(buttonId).css("color", $scope.color);
+			$(lineId).css("stroke", $scope.color);
+
+			graphManager.changeDotColor($window.activeCell, $scope.color);
+		});
+		
+		$scope.getColor = function($event){
+			var buttonId = "#GRAPH"+$window.activeGraph + "-cell_button" + $window.activeCell + "-cell-button";
+			$scope.color = $(buttonId).css("color");
+
+			console.log($event);
+			$event.preventDefault();
+		};
+		
+		$scope.add = function(element,id){
+			$(element).append(
+				$compile(
+				'<li><a id="'+id+'-change_color" colorpicker ng-click="getColor($event)" ng-model="color" type="text" href="#" >Change color</a></li>'
+				)($scope)
+			);
+			$scope.$apply();
+		};
+	}]);
+	
+	reportsInit();
+	var graphManager = new createGraphManager();
+
+	$(".inputModal").on('shown.bs.modal', function() {
+			var inputBar = $(this).find("input")
+
+			inputBar.focus();
+//			inputBar.value("");
+	});
+
+	// http://stackoverflow.com/questions/155188/trigger-a-button-click-with-javascript-on-the-enter-key-in-a-text-box
+	function enableEnterKey(containerID){
+		if (event.keyCode == 13){
+			document.getElementById(containerID).click();
+		}
+	}
+
+	</script>
+</html>
