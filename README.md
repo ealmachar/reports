@@ -5,6 +5,7 @@ Reporting features:
 
 - Add/Remove graphs
 - Zoom in/out of graphs
+- Expand/contract graph height
 - Data position slider
 - Move graphs in between columns
 - Add/Remove line data
