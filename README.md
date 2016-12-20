@@ -1,6 +1,8 @@
 # senior-project
 Reupload of my reporting interface
 
+Made with SVG's using D3js
+
 Reporting features:
 
 - Add/Remove graphs
