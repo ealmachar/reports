@@ -15,4 +15,8 @@ Reporting features:
 - Pause/play streaming
 - Record GIFs/Pictures
 
+# Usage
+1. clone/download
+2. open index.html in web browser
+
 ![alt text](https://raw.githubusercontent.com/ealmachar/senior-project/master/report%20example.PNG "example ")
