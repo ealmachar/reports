@@ -1,9 +1,9 @@
-# senior-project
-Reupload of my reporting interface
+# reports.js
+Purpose: Tinkering project, senior project
 
-Made with SVG's using D3js
+Reporting interface made with SVG's using D3js and jQuery
 
-Reporting features:
+Features:
 
 - Add/Remove graphs
 - Zoom in/out of graphs
@@ -16,12 +16,10 @@ Reporting features:
 - Record GIFs/Pictures
 
 # Usage
-1. clone/download
-2. open reports.html in web browser
-3. Click "Add Line Graph" or "Add Raster Plot" to start
-4. Good data sets to test for line graphs are 5, 6, 8, and 9. You can check sample_data.js to find other data sets with variable values.
+1. Click "Add Line Graph" or "Add Raster Plot" to start
+2. Good data sets to test for line graphs are 5, 6, 8, and 9. You can check sample_data.js to find other data sets with variable values.
 
- You can also view it [here](http://ealmachar.github.io/projects/reports.js/reports.html).
+ You can view it [here](http://ealmachar.github.io/projects/reports.js/reports.html).
  
 ---
 
