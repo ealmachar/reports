@@ -1,4 +1,4 @@
-# reports.js
+# reports
 Purpose: Tinkering project, senior project
 
 Reporting interface made with SVG's using D3js. Also uses jQuery and Twitter Bootstrap.
