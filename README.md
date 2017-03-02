@@ -15,11 +15,13 @@ Features:
 - Pause/play streaming
 - Record GIFs/Pictures
 
-# Usage
+
+You can view it [here](http://ealmachar.github.io/projects/reports.js/reports.html).
+
 1. Click "Add Line Graph" or "Add Raster Plot" to start
 2. Good data sets to test for line graphs are 5, 6, 8, and 9. You can check sample_data.js to find other data sets with variable values.
 
- You can view it [here](http://ealmachar.github.io/projects/reports.js/reports.html).
+
  
 ---
 
